@@ -1,6 +1,6 @@
 # acorn
 
-TODO: Write a description here
+🚧 Under Construction 👷
 
 ## Installation
 
@@ -31,13 +31,9 @@ module Lexer
   # creates `self.scan(input)`
   yield_grammar
 end
-```
 
+Lexer.scan(input) # => Array(Tuple(Symbol, String))
 ```
-$ crystal run grammar.cr
-# Grammar -> lexer.cr
-```
-
 
 ## Development
 
