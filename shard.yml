@@ -1,0 +1,9 @@
+name: acorn
+version: 0.1.0
+
+authors:
+  - Robert Mosolgo <rdmosolgo@gmail.com>
+
+crystal: 0.21.0
+
+license: MIT
