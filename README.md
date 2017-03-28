@@ -1,4 +1,4 @@
-# acorn
+# Acorn [![Build Status](https://travis-ci.org/rmosolgo/acorn.svg?branch=master)](https://travis-ci.org/rmosolgo/acorn)
 
 🚧 Under Construction 👷
 
