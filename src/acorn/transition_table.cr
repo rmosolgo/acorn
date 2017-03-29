@@ -1,4 +1,4 @@
-require "./transition_table/prepare.cr"
+require "./transition_table/*"
 
 module Acorn
   class TransitionTable
@@ -13,7 +13,8 @@ module Acorn
 
     alias Token = Tuple(Symbol, String)
     alias Tokens = Array(Token)
-    alias Action = Proc(String, Tokens, Nil)
+    alias Accumulator = Tokens
+    alias Action = Proc(Tokens, String, Int32, Int32, Nil)
     alias Actions = Hash(State, Action)
 
     getter table
@@ -24,31 +25,12 @@ module Acorn
       @table, @actions, @ending_states = TransitionTable::Prepare.call(grammar)
     end
 
-    def consume(string : String)
+    def scan(string : String)
       tokens = Tokens.new
-      current_state = 0
-      char = nil
-      idx = 0
-      last_idx = string.size - 1
-      token_begin = 0
-      while idx <= last_idx
-        char ||= string.char_at(idx)
-        transitions = @table[current_state]
-        if (next_state = transitions[char]?)
-          idx += 1
-          char = nil
-        else
-          next_state = transitions[nil]
-          token_value = string[token_begin...idx]
-          @actions[current_state].call(token_value, tokens)
-          token_begin = idx
-        end
-        current_state = next_state
-      end
-      # last token:
-      token_value = string[token_begin..idx]
-      @actions[current_state].call(token_value, tokens)
+      consume(string, tokens)
       tokens
     end
+
+    Acorn::TransitionTable::Consume.define_consume_method("@table", "@actions")
   end
 end

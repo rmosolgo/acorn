@@ -31,7 +31,7 @@ module Acorn
             s << ending_state
             transitions = table[ending_state] ||= Transitions.new
             transitions[nil] = 0
-            actions[ending_state] = TransitionTable::Action.new { |str, tokens| tokens << {tok_name, str} }
+            actions[ending_state] = TransitionTable::Action.new { |tokens, str, ts, te| tokens << {tok_name, str[ts...te]} }
           end
         end
 

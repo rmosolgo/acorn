@@ -1,4 +1,5 @@
 module <%= @name %>
+  extend self
   # This is the kind of thing which is:
   # - initially passed to `consume`
   # - passed to each
@@ -14,30 +15,9 @@ module <%= @name %>
   # since this method returns nil.
   #
   # If there's a scanning error, an error is raised.
-  def self.consume(input : String, acc : Accumulator) : Nil
-    current_state = 0
-    char = nil
-    idx = 0
-    last_idx = input.size - 1
-    token_begin = 0
-    while idx <= last_idx
-      char ||= input.char_at(idx)
-      transitions = TABLE[current_state]
-      if (next_state = transitions[char]?)
-        idx += 1
-        char = nil
-      else
-        next_state = transitions[nil]
-        ACTIONS[current_state].call(acc, input, token_begin, idx)
-        token_begin = idx
-      end
-      current_state = next_state
-    end
-    # last token:
-    ACTIONS[current_state].call(acc, input, token_begin, idx)
-  end
+  <%= @consume_method %>
 
-  def self.scan(input : String) : Accumulator
+  def scan(input : String) : Accumulator
     acc = Accumulator.new
     consume(input, acc)
     acc

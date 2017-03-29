@@ -1,12 +1,17 @@
 require "ecr/macros"
+require "./transition_table/consume"
 
 module Acorn
   class StaticMachine
+    include Acorn::TransitionTable::Consume
+
     alias ActionDefinition = Tuple(Symbol, String, String)
     alias ActionDefinitions = Array(ActionDefinition)
 
     property name = "AcornGeneratedMachine"
     property accumulator = "Array(Tuple(Symbol, String))"
+    getter consume_method : String = CONSUME_DEFINITION.gsub("$$table", "TABLE").gsub("$$actions", "ACTIONS")
+
     getter actions
 
     def initialize

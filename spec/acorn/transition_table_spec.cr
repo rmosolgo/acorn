@@ -13,7 +13,7 @@ describe Acorn::TransitionTable do
       # p table.table
       # puts "\n"
 
-      tokens = table.consume("abcaaaxabc")
+      tokens = table.scan("abcaaaxabc")
       expected_tokens = [
         {:a, "abc"},
         {:c, "a"},

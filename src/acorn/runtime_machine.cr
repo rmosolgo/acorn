@@ -22,7 +22,7 @@ module Acorn
     end
 
     def scan(input)
-      table.consume(input)
+      table.scan(input)
     end
 
     private def table

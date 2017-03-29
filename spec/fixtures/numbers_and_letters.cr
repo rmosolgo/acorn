@@ -1,4 +1,5 @@
 module NumbersAndLetters
+  extend self
   # This is the kind of thing which is:
   # - initially passed to `consume`
   # - passed to each
@@ -14,7 +15,7 @@ module NumbersAndLetters
   # since this method returns nil.
   #
   # If there's a scanning error, an error is raised.
-  def self.consume(input : String, acc : Accumulator) : Nil
+  def consume(input : String, acc : Accumulator) : Nil
     current_state = 0
     char = nil
     idx = 0
@@ -37,7 +38,7 @@ module NumbersAndLetters
     ACTIONS[current_state].call(acc, input, token_begin, idx)
   end
 
-  def self.scan(input : String) : Accumulator
+  def scan(input : String) : Accumulator
     acc = Accumulator.new
     consume(input, acc)
     acc
