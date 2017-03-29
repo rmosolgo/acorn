@@ -7,6 +7,7 @@ module Acorn
     alias Transition = Char | Nil
     alias Transitions = Hash(Transition, State)
     alias Table = Hash(State, Transitions)
+    alias StateMap = Hash(Symbol, Array(State))
     # TODO: is this actually worth it?
     # alias IndexedTable = Array(Transitions)
 
@@ -16,9 +17,11 @@ module Acorn
     alias Actions = Hash(State, Action)
 
     getter table
+    getter actions
+    getter ending_states
 
-    def initialize(grammar : Acorn::Grammar)
-      @table, @actions = TransitionTable::Prepare.call(grammar)
+    def initialize(grammar)
+      @table, @actions, @ending_states = TransitionTable::Prepare.call(grammar)
     end
 
     def consume(string : String)

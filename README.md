@@ -2,6 +2,8 @@
 
 🚧 Under Construction 👷
 
+Define a grammar using a subset of regular expression notation, then compile it into a blazing-fast state machine. `Acorn` supports lexers or custom string-based state machines.
+
 ## Installation
 
 Add this to your application's `shard.yml`:
@@ -14,30 +16,42 @@ dependencies:
 
 ## Usage
 
-```ruby
-# grammar.cr
-require "acorn"
+- Define the grammar in a build file:
 
-module Lexer
-  include Acorn
+  ```ruby
+  # ./build/my_lexer.cr
+  require "acorn"
 
-  # define the grammar
-  grammar do |g|
-    g.token :number, "0-9+"
-    g.token :capital, "A-Z"
+  module MyLexer
+    include Acorn::Macros
+    token :letter "a-z"
+    token :number "0-9"
+    generate "./src/my_lexer.cr"
   end
+  ```
 
-  # dump scan methods here,
-  # creates `self.scan(input)`
-  yield_grammar
-end
+- Generate the lexer:
 
-Lexer.scan(input) # => Array(Tuple(Symbol, String))
-```
+  ```
+  crystal run ./build/my_lexer.cr
+  ```
+
+- Use the compiled lexer:   
+
+  ```ruby
+  require "./src/my_lexer.cr"
+  MyLexer.scan(input) # => Array(Tuple(Symbol, String))
+  ```
 
 ## Development
 
 - `crystal spec`
+- The fixtures are weird, use `crystal run spec/prepare.cr` if they're stale
+
+## TODO
+
+- Better tokens: include line & col out of the box
+- Handle repetition in the transition table
 
 ## Contributing
 

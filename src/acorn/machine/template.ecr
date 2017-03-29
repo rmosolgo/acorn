@@ -1,0 +1,57 @@
+module <%= @name %>
+  # This is the kind of thing which is:
+  # - initially passed to `consume`
+  # - passed to each
+  alias Accumulator = <%= @accumulator %>
+  # When we finish a pattern, we call its corresponding action.
+  # The action should modify `Accumulator`.
+  # The first `int` is the beginning index of the current pattern.
+  # The second `int` is the ending index of the current pattern.
+  alias Action = Proc(Accumulator, String, Int32, Int32, Nil)
+
+  # Work through `input` according to this machine,
+  # passing `acc` to each action. `acc` will be modified in-place
+  # since this method returns nil.
+  #
+  # If there's a scanning error, an error is raised.
+  def self.consume(input : String, acc : Accumulator) : Nil
+    current_state = 0
+    char = nil
+    idx = 0
+    last_idx = input.size - 1
+    token_begin = 0
+    while idx <= last_idx
+      char ||= input.char_at(idx)
+      transitions = TABLE[current_state]
+      if (next_state = transitions[char]?)
+        idx += 1
+        char = nil
+      else
+        next_state = transitions[nil]
+        ACTIONS[current_state].call(acc, input, token_begin, idx)
+        token_begin = idx
+      end
+      current_state = next_state
+    end
+    # last token:
+    ACTIONS[current_state].call(acc, input, token_begin, idx)
+  end
+
+  def self.scan(input : String) : Accumulator
+    acc = Accumulator.new
+    consume(input, acc)
+    acc
+  end
+
+  # A deterministic finite automaton built from the specified patterns
+  TABLE = {
+<% table.table.each do |start, transitions| %>    <%= start %> => {<% transitions.each do |char, end_state| %>
+      <%= char ? char.inspect : "nil" %> => <%= end_state %>,<% end %>
+    },
+<% end %>  }
+
+  # A map of state => Action pairs to call when machines are finished
+  ACTIONS = {
+<% @actions.each do |name, pattern, body| terminals = table.ending_states[name]; terminals.each do |terminal_state| %>    <%= terminal_state %> => Action.new <%= body %>,
+<% end %><% end %>  }
+end
