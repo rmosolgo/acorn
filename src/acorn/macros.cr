@@ -21,7 +21,7 @@ module Acorn
     end
 
     macro generate(outfile)
-      File.write({{ outfile }}, @@_acorn_machine.to_s)
+      @@_acorn_machine.to_outfile({{ outfile }})
     end
   end
 end

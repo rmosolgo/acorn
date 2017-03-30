@@ -13,7 +13,7 @@ module Acorn
       @actions = ActionDefinitions.new
     end
 
-    def token(name, pattern)
+    def token(name, pattern : String)
       action(name, pattern, Action.new { |acc, str, t_beg, t_end| acc << Token.new(name, str[t_beg...t_end]) })
     end
 

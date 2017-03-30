@@ -2,41 +2,30 @@ require "string_scanner"
 require "./pattern/parse.cr"
 
 module Acorn
-  class Pattern
+  abstract class Pattern
     alias Matches = Array(Char)
     alias Occurrences = Range(Int32, Int32)
     ONCE = 1..1
+    ANY_NUMBER = Int32::MAX
+
     def self.parse(expression : String)
       Parse.call(expression)
     end
 
-    getter matches
-    getter occurrences
-
-    def initialize(@matches : Matches, @occurrences : Occurrences = ONCE)
-    end
+    getter occurrences : Occurrences = ONCE
+    getter matches : Matches = Matches.new
 
     def occurs(new_occurs : Occurrences)
       @occurrences = new_occurs
     end
 
     def union(other : Pattern)
-      EitherPattern.new(left: self, right: other)
+      Acorn::EitherPattern.new(left: self, right: other)
     end
 
-    class EitherPattern < Pattern
-      property occurrences
-      getter matches
-      getter left
-      getter right
-
-      def initialize(@left : Pattern, @right : Pattern, @occurrences : Occurrences = ONCE)
-        @matches = @left.matches | @right.matches
-      end
-
-      def occurs(new_occurs : Occurrences)
-        @occurrences = new_occurs
-      end
+    # Why doesn't `abstract def` work here?
+    def to_debug
+      "ABSTRACT"
     end
   end
 end

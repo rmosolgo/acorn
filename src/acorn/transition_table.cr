@@ -31,6 +31,15 @@ module Acorn
       tokens
     end
 
+    def to_debug
+      io = IO::Memory.new
+      io << "\n"
+      io << @table.to_s
+      io << "\n"
+      io << @ending_states.to_s
+      io.to_s
+    end
+
     Acorn::TransitionTable::Consume.define_consume_method("@table", "@actions")
   end
 end

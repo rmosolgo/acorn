@@ -1,7 +1,11 @@
 require "../spec_helper"
 
 def pattern_parse_one(string)
-  pattern_parse_many(string, 1).first
+  pattern_parse_many(string, 1).first.as(Acorn::CharPattern)
+end
+
+def pattern_parse_one_either(string)
+  pattern_parse_many(string, 1).first.as(Acorn::EitherPattern)
 end
 
 def pattern_parse_many(string, expected)
@@ -9,7 +13,7 @@ def pattern_parse_many(string, expected)
   if patterns.size == expected
     patterns
   else
-    raise "Expected #{expected}, got #{patterns.size} (#{patterns.map(&.matches)})"
+    raise "Expected #{expected}, got #{patterns.size} (#{patterns.map(&.to_debug)})"
   end
 end
 
@@ -18,6 +22,7 @@ describe Acorn::Pattern do
     it "handles single characters" do
       pattern = pattern_parse_one("a")
       pattern.matches.should eq(['a'])
+      pattern.match.should eq('a')
       pattern.occurrences.should eq(1..1)
 
       pattern = pattern_parse_one("9")
@@ -27,7 +32,7 @@ describe Acorn::Pattern do
     end
 
     it "unpacks sequences" do
-      pattern = pattern_parse_one("A-Z")
+      pattern = pattern_parse_one_either("A-Z")
       sequence = pattern.matches
       sequence.should eq([
         'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
@@ -35,7 +40,7 @@ describe Acorn::Pattern do
         'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
       ])
 
-      pattern = pattern_parse_one("乮-乲")
+      pattern = pattern_parse_one_either("乮-乲")
       pattern.matches.should eq(['乮', '乯', '买', '乱', '乲'])
     end
 
@@ -56,7 +61,7 @@ describe Acorn::Pattern do
       pattern.matches.should eq(['Ꚋ'])
       pattern.occurrences.should eq(0..1)
 
-      pattern = pattern_parse_one("0-3?")
+      pattern = pattern_parse_one_either("0-3?")
       pattern.matches.should eq(['0', '1', '2', '3'])
       pattern.occurrences.should eq(0..1)
     end
@@ -66,31 +71,29 @@ describe Acorn::Pattern do
       pattern.matches.should eq(['$'])
       pattern.occurrences.should eq(1..Int32::MAX)
 
-      pattern = pattern_parse_one("c-f+")
+      pattern = pattern_parse_one_either("c-f+")
       pattern.matches.should eq(['c', 'd', 'e', 'f'])
       pattern.occurrences.should eq(1..Int32::MAX)
     end
 
     it "unpacks zero-or-mores" do
-      pattern = pattern_parse_one("6-8*")
+      pattern = pattern_parse_one_either("6-8*")
       pattern.matches.should eq(['6', '7', '8'])
       pattern.occurrences.should eq(0..Int32::MAX)
     end
 
     it "unpacks alternation" do
-      pattern = pattern_parse_one("a|b").as(Acorn::Pattern::EitherPattern)
-      pattern.matches.should eq(['a', 'b'])
+      pattern = pattern_parse_one_either("a|b")
       pattern.left.matches.should eq(['a'])
       pattern.right.matches.should eq(['b'])
       pattern.occurrences.should eq(1..1)
 
-      pattern = pattern_parse_one("a|b|c").as(Acorn::Pattern::EitherPattern)
-      pattern.left.as(Acorn::Pattern::EitherPattern).left.matches.should eq(['a'])
-      pattern.left.as(Acorn::Pattern::EitherPattern).right.matches.should eq(['b'])
+      pattern = pattern_parse_one_either("a|b|c")
+      pattern.left.as(Acorn::EitherPattern).left.matches.should eq(['a'])
+      pattern.left.as(Acorn::EitherPattern).right.matches.should eq(['b'])
       pattern.right.matches.should eq(['c'])
-      pattern.matches.should eq(['a', 'b', 'c'])
 
-      pattern = pattern_parse_one("a?|0-2{2,}").as(Acorn::Pattern::EitherPattern)
+      pattern = pattern_parse_one_either("a?|0-2{2,}")
 
       pattern.left.matches.should eq(['a'])
       pattern.left.occurrences.should eq(0..1)
@@ -98,7 +101,6 @@ describe Acorn::Pattern do
       pattern.right.matches.should eq(['0', '1', '2'])
       pattern.right.occurrences.should eq(2..Int32::MAX)
 
-      pattern.matches.should eq(['a', '0', '1', '2'])
       pattern.occurrences.should eq(1..1)
     end
 
@@ -130,6 +132,8 @@ describe Acorn::Pattern do
       patterns = pattern_parse_many("謝謝你", 3)
       matches = patterns.map(&.matches)
       matches.should eq([['謝'], ['謝'],['你']])
+      occurrences = patterns.map(&.occurrences)
+      occurrences.should eq([1..1, 1..1, 1..1])
     end
 
     it "gets sequences with operators" do

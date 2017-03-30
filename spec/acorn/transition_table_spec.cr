@@ -9,10 +9,6 @@ describe Acorn::TransitionTable do
       m.token(:c, "a")
 
       table = Acorn::TransitionTable.new(m)
-      # puts "\n Table:"
-      # p table.table
-      # puts "\n"
-
       tokens = table.scan("abcaaaxabc")
       expected_tokens = [
         {:a, "abc"},
@@ -32,6 +28,31 @@ describe Acorn::TransitionTable do
       terminals[:b].should eq([4])
       terminals[:c].should eq([1])
     end
+
+    it "handles repetition" do
+      m = Acorn::RuntimeMachine.new
+      m.token(:a, "a?")
+      m.token(:b, "b+")
+      m.token(:c, "c*")
+      m.token(:d, "d{2,4}")
+      table = Acorn::TransitionTable.new(m)
+      tokens = table.scan("aadddccddddddbbabc")
+      expected_tokens = [
+        {:a, "a"},
+        {:a, "a"},
+        {:d, "ddd"},
+        {:c, "cc"},
+        {:d, "dddd"},
+        {:d, "dd"},
+        {:b, "bb"},
+        {:a, "a"},
+        {:b, "b"},
+        {:c, "c"},
+      ]
+      tokens.should eq(expected_tokens)
+    end
+
+    pending "handes alternation AND repetition" { }
   end
 
   describe "errors" do

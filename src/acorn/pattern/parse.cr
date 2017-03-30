@@ -2,7 +2,6 @@ module Acorn
   class Pattern
     module Parse
       alias Steps = Array(Pattern)
-      ANY_NUMBER = Int32::MAX
 
       enum UnionState
         # We haven't seen a union lately:
@@ -45,9 +44,9 @@ module Acorn
           elsif scanner.scan(/\?/)
             apply_number(parts, 0..1)
           elsif scanner.scan(/\*/)
-            apply_number(parts, 0..ANY_NUMBER)
+            apply_number(parts, 0..Pattern::ANY_NUMBER)
           elsif scanner.scan(/\+/)
-            apply_number(parts, 1..ANY_NUMBER)
+            apply_number(parts, 1..Pattern::ANY_NUMBER)
           elsif scanner.scan(/\{(\d+)(,)?(\d+)?\}/)
             min = scanner[1].to_i
             max = if scanner[2]?
@@ -67,13 +66,17 @@ module Acorn
             # Range expression
             range_begin = scanner[1].char_at(0)
             range_end = scanner[2].char_at(0)
-            char_range = range_begin..range_end
-            parts.push(Pattern.new(matches: char_range.to_a))
+            chars = (range_begin..range_end).to_a
+            char_pattern = CharPattern.new(match: chars.shift)
+            pattern = chars.reduce(char_pattern) do |pat, char|
+              pat.union(CharPattern.new(match: char))
+            end
+            parts.push(pattern)
           elsif scanner.scan(/./)
             union = apply_union(parts, union)
             push_char(parts, scanner)
           else
-            raise "Failed to unpack expression #{expression},\n  Remainder: #{scanner.rest} \n  Parts: \n    #{parts.map { |pt| "#{pt.matches} (#{pt.occurrences})" }.join("\n    ")}"
+            raise "Failed to unpack expression #{expression},\n  Remainder: #{scanner.rest} \n  Parts: \n    #{parts.map(&.to_debug).join("\n    ")}"
           end
         end
 
@@ -106,7 +109,7 @@ module Acorn
 
       private def self.push_char(parts, scanner)
         character = scanner[0].char_at(0)
-        parts.push(Pattern.new([character]))
+        parts.push(CharPattern.new(match: character))
       end
     end
   end

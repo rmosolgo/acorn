@@ -31,6 +31,10 @@ module Acorn
       @table ||= Acorn::TransitionTable.new(grammar: self)
     end
 
-    ECR.def_to_s("./src/acorn/machine/template.ecr")
+    ECR.def_to_s "./src/acorn/machine/template.ecr"
+
+    def to_outfile(outfile)
+      File.write(outfile, to_s)
+    end
   end
 end
