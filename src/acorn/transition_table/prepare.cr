@@ -1,19 +1,10 @@
 module Acorn
   class TransitionTable
     module Prepare
-      def self.call(grammar) : Tuple(TransitionTable::Table, TransitionTable::Actions, TransitionTable::StateMap)
-        # Incrementing counter for state numbers
-        next_state = 0
-        table = TransitionTable::Table.new do |h, k|
-          h[k] = Transitions.new do |h2, k2|
-            ns = next_state += 1
-            # puts "#{k} -> #{k2} -> #{ns}"
-            h2[k2] = ns
-          end
-        end
-
-        ending_states = TransitionTable::StateMap.new { |h, k| h[k] = Array(TransitionTable::State).new }
-        actions = TransitionTable::Actions.new
+      def self.call(transition_table, grammar) : Nil
+        table = transition_table.table
+        ending_states = transition_table.ending_states
+        actions = transition_table.actions
 
         grammar.actions.each do |tok_name, tok_pat, tok_handler|
           push_token = TransitionTable::Action.new { |tokens, str, ts, te| tokens << {tok_name, str[ts...te]} }
@@ -32,8 +23,6 @@ module Acorn
             actions[ending_state] = push_token
           end
         end
-
-        return table, actions, ending_states
       end
 
       def self.build_states(table, pattern, start_states)

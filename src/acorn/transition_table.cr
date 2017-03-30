@@ -22,7 +22,19 @@ module Acorn
     getter ending_states
 
     def initialize(grammar)
-      @table, @actions, @ending_states = TransitionTable::Prepare.call(grammar)
+      next_state = 0
+      @table = Table.new do |h, k|
+        h[k] = Transitions.new do |h2, k2|
+          ns = next_state += 1
+          # puts "#{k} -> #{k2} -> #{ns}"
+          h2[k2] = ns
+        end
+      end
+
+      @ending_states = StateMap.new { |h, k| h[k] = Array(TransitionTable::State).new }
+      @actions = Actions.new
+
+      Prepare.call(self, grammar)
     end
 
     def scan(string : String)
