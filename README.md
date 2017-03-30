@@ -2,7 +2,7 @@
 
 🚧 Under Construction 👷
 
-Define a grammar using a subset of regular expression notation, then compile it into a blazing-fast state machine. `Acorn` supports lexers or custom string-based state machines.
+A state machine compiler with no runtime dependency.Define a grammar using a subset of regular expression notation, then compile it into a blazing-fast state machine. `Acorn` supports lexers or custom string-based state machines.
 
 ## Installation
 
@@ -51,8 +51,8 @@ Feature | Example
 ---|---
 Character| `a`, `1`, `❤️`
 Sequence |`ab`, `123`
-Alternation | `a┃b`
-~~Grouping~~ | `(ab)┃c`
+Alternation | `a|b`
+~~Grouping~~ | `(ab)|c`
 ~~Any character~~ | `.`
 One of | `[abc]`
 ~~Not one of~~ | `[^abc]`
@@ -65,6 +65,37 @@ Specific number | `a{3}`
 Between numbers | `a{3,4}`
 At least | `a{3,}`
 
+### Build Step
+
+An `Acorn` module is a Crystal program that generates code. To get a lexer, you have to run the `Acorn` module. Then, your main program should use the generated code.
+
+For example, if you define a lexer:
+
+```ruby
+# build/my_lexer.cr
+module MyLexer
+  include Acorn::Macros
+  # ...
+  generate("./app/my_lexer.cr")
+end
+```
+
+You should _run_ the file with Crystal to generate the specified file:
+
+```
+crystal run build/my_lexer.cr
+```
+
+Then, your main program should `require` the generated file:
+
+```ruby
+# my_app.cr
+require "app/my_lexer"
+MyLexer.scan(input) # => Array(Tuple(Symbol, String))
+```
+
+The generated code has no dependency on `Acorn`, so you only need this library during development.
+
 ## Development
 
 - rebuild fixtures with `crystal run spec/prepare.cr`
@@ -75,14 +106,6 @@ At least | `a{3,}`
 - Add proper error handling
 - Finish regexp language (`(...)`, `.`, `[^...]`)
 - Better tokens: include line & col out of the box
-
-## Contributing
-
-1. Fork it (https://github.com/rmosolgo/acorn/fork)
-2. Create your feature branch (git checkout -b my-new-feature)
-3. Commit your changes (git commit -am 'Add some feature')
-4. Push to the branch (git push origin my-new-feature)
-5. Create a new Pull Request
 
 ## License
 
