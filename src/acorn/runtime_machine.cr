@@ -14,7 +14,7 @@ module Acorn
     end
 
     def token(name, pattern : String)
-      action(name, pattern, Action.new { |acc, str, t_beg, t_end| acc << Token.new(name, str[t_beg...t_end]) })
+      action(name, pattern, Action.new { |acc, str, ts, te| acc << Token.new(name, str[ts..te]) })
     end
 
     def action(name, pattern, body)

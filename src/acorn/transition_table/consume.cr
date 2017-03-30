@@ -16,13 +16,13 @@ module Acorn
         char = nil
       else
         next_state = transitions[:epsilon]
-        $$actions[current_state].call(acc, input, token_begin, idx)
+        $$actions[current_state].call(acc, input, token_begin, idx - 1)
         token_begin = idx
       end
       current_state = next_state
     end
     # last token:
-    $$actions[current_state].call(acc, input, token_begin, idx)
+    $$actions[current_state].call(acc, input, token_begin, idx - 1)
   end"
 
       macro define_consume_method(table_id, actions_id)

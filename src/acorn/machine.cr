@@ -1,15 +1,14 @@
+require "./static_machine"
+
 module Acorn
-  module Macros
-    macro included
+  class Machine
+    macro inherited
       @@_acorn_machine = Acorn::StaticMachine.new
+      @@_acorn_machine.name = "{{ @type.name }}"
     end
 
     macro machine(name)
       @@_acorn_machine.name = {{ name }}
-    end
-
-    macro token(symbol, pattern)
-      @@_acorn_machine.token({{symbol}}, {{pattern}})
     end
 
     macro action(symbol, pattern, &block)

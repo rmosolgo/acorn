@@ -19,7 +19,7 @@ module Acorn
     end
 
     def token(name, pattern)
-      act_defn = "{ |acc, str, t_beg, t_end| acc << {:#{name}, str[t_beg...t_end]} }"
+      act_defn = "{ |acc, str, ts, te| acc << {:#{name}, str[ts..te]} }"
       action(name, pattern, act_defn)
     end
 
@@ -31,7 +31,7 @@ module Acorn
       @table ||= Acorn::TransitionTable.new(grammar: self)
     end
 
-    ECR.def_to_s "./src/acorn/machine/template.ecr"
+    ECR.def_to_s "./src/acorn/static_machine/template.ecr"
 
     def to_outfile(outfile)
       File.write(outfile, to_s)

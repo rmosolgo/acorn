@@ -1,7 +1,6 @@
 require "../../src/acorn"
 
-module CustomMachineDefinition
-  include Acorn::Macros
+class CustomMachineDefinition < Acorn::Machine
   machine "CustomMachine"
   accumulator "Array(Tuple(Int32, Int32))"
   action :letter, "a-z" { |acc, str, ts, te| acc << {ts, te} }

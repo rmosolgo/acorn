@@ -25,10 +25,10 @@ describe Acorn::StaticMachine do
 
     rendered_actions = normalize_code "
     ACTIONS = {
-      1 => Action.new { |acc, str, t_beg, t_end| acc << {:num, str[t_beg...t_end]} },
-      2 => Action.new { |acc, str, t_beg, t_end| acc << {:num, str[t_beg...t_end]} },
-      3 => Action.new { |acc, str, t_beg, t_end| acc << {:let, str[t_beg...t_end]} },
-      4 => Action.new { |acc, str, t_beg, t_end| acc << {:let, str[t_beg...t_end]} },
+      1 => Action.new { |acc, str, ts, te| acc << {:num, str[ts..te]} },
+      2 => Action.new { |acc, str, ts, te| acc << {:num, str[ts..te]} },
+      3 => Action.new { |acc, str, ts, te| acc << {:let, str[ts..te]} },
+      4 => Action.new { |acc, str, ts, te| acc << {:let, str[ts..te]} },
     }
     "
     normalized_crystal_code.should contain(rendered_actions)

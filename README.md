@@ -22,8 +22,9 @@ dependencies:
   # ./build/my_lexer.cr
   require "acorn"
 
-  module MyLexer
-    include Acorn::Macros
+  module MyLexer < Acorn::Lexer
+    # optional, rename the generated class:
+    # name("Namespace::MyLexer")
     token :letter "a-z"
     token :number "0-9"
     generate "./src/my_lexer.cr"
@@ -73,8 +74,7 @@ For example, if you define a lexer:
 
 ```ruby
 # build/my_lexer.cr
-module MyLexer
-  include Acorn::Macros
+module MyLexer < Acorn::Lexer
   # ...
   generate("./app/my_lexer.cr")
 end
@@ -95,6 +95,32 @@ MyLexer.scan(input) # => Array(Tuple(Symbol, String))
 ```
 
 The generated code has no dependency on `Acorn`, so you only need this library during development.
+
+### Tokens
+
+`Acorn` returns an array tokens. Each token is a tuple with:
+
+- `Symbol`: the name of this token in the lexer definition
+- `String`: the segment of input which matched the pattern
+- ~~`{Int32, Int32}`~~: line number and column number where the token began
+- ~~`{Int32, Int32}`~~: line number and column number where the token ended
+
+Line numbers and column numbers are _1-indexed_, so the first character in the input is `1:1`.
+
+### Custom Machines
+
+`Acorn` lexers are actually a special case of state machine. You can specify a custom machine, too.
+
+- `class MyMachine < Acorn::Machine` to bring in the macros
+- `alias Accumulator = ...` to specify the data that will be modified during the process
+  - It will be initialized with `.new`
+  - It will be returned from `.scan`
+- use `action :name, "pattern" { |acc, str, ts, te| ... }` to define patterns
+  - `acc` is an instance of your `Accumulator`
+  - `str` is the original input
+  - `ts` is the index in `str` where this token began
+  - `te` is the index in `str` where this token ended (if the match is one character long, `ts == te`)
+- optionally, `name("MyNamespace::MachineName")` to rename the generated Crystal class
 
 ## Development
 

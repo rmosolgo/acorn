@@ -1,7 +1,7 @@
 require "../spec_helper"
 
 
-describe Acorn::Macros do
+describe Acorn::Machine do
   it "makes a lexer" do
     tokens = NumbersAndLetters.scan("a1b2")
     expected_tokens = [
@@ -16,9 +16,9 @@ describe Acorn::Macros do
   it "makes a custom machine" do
     tokens = CustomMachine.scan("xyz")
     expected_tokens = [
-      {0, 1},
-      {1, 2},
-      {2, 3},
+      {0, 0},
+      {1, 1},
+      {2, 2},
     ]
     tokens.should eq(expected_tokens)
   end

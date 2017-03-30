@@ -29,13 +29,13 @@ module CustomMachine
         char = nil
       else
         next_state = transitions[:epsilon]
-        ACTIONS[current_state].call(acc, input, token_begin, idx)
+        ACTIONS[current_state].call(acc, input, token_begin, idx - 1)
         token_begin = idx
       end
       current_state = next_state
     end
     # last token:
-    ACTIONS[current_state].call(acc, input, token_begin, idx)
+    ACTIONS[current_state].call(acc, input, token_begin, idx - 1)
   end
 
   def scan(input : String) : Accumulator

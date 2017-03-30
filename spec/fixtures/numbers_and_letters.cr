@@ -29,13 +29,13 @@ module NumbersAndLetters
         char = nil
       else
         next_state = transitions[:epsilon]
-        ACTIONS[current_state].call(acc, input, token_begin, idx)
+        ACTIONS[current_state].call(acc, input, token_begin, idx - 1)
         token_begin = idx
       end
       current_state = next_state
     end
     # last token:
-    ACTIONS[current_state].call(acc, input, token_begin, idx)
+    ACTIONS[current_state].call(acc, input, token_begin, idx - 1)
   end
 
   def scan(input : String) : Accumulator
@@ -196,41 +196,41 @@ module NumbersAndLetters
 
   # A map of state => Action pairs to call when machines are finished
   ACTIONS = {
-    1 => Action.new { |acc, str, t_beg, t_end| acc << {:letter, str[t_beg...t_end]} },
-    2 => Action.new { |acc, str, t_beg, t_end| acc << {:letter, str[t_beg...t_end]} },
-    3 => Action.new { |acc, str, t_beg, t_end| acc << {:letter, str[t_beg...t_end]} },
-    4 => Action.new { |acc, str, t_beg, t_end| acc << {:letter, str[t_beg...t_end]} },
-    5 => Action.new { |acc, str, t_beg, t_end| acc << {:letter, str[t_beg...t_end]} },
-    6 => Action.new { |acc, str, t_beg, t_end| acc << {:letter, str[t_beg...t_end]} },
-    7 => Action.new { |acc, str, t_beg, t_end| acc << {:letter, str[t_beg...t_end]} },
-    8 => Action.new { |acc, str, t_beg, t_end| acc << {:letter, str[t_beg...t_end]} },
-    9 => Action.new { |acc, str, t_beg, t_end| acc << {:letter, str[t_beg...t_end]} },
-    10 => Action.new { |acc, str, t_beg, t_end| acc << {:letter, str[t_beg...t_end]} },
-    11 => Action.new { |acc, str, t_beg, t_end| acc << {:letter, str[t_beg...t_end]} },
-    12 => Action.new { |acc, str, t_beg, t_end| acc << {:letter, str[t_beg...t_end]} },
-    13 => Action.new { |acc, str, t_beg, t_end| acc << {:letter, str[t_beg...t_end]} },
-    14 => Action.new { |acc, str, t_beg, t_end| acc << {:letter, str[t_beg...t_end]} },
-    15 => Action.new { |acc, str, t_beg, t_end| acc << {:letter, str[t_beg...t_end]} },
-    16 => Action.new { |acc, str, t_beg, t_end| acc << {:letter, str[t_beg...t_end]} },
-    17 => Action.new { |acc, str, t_beg, t_end| acc << {:letter, str[t_beg...t_end]} },
-    18 => Action.new { |acc, str, t_beg, t_end| acc << {:letter, str[t_beg...t_end]} },
-    19 => Action.new { |acc, str, t_beg, t_end| acc << {:letter, str[t_beg...t_end]} },
-    20 => Action.new { |acc, str, t_beg, t_end| acc << {:letter, str[t_beg...t_end]} },
-    21 => Action.new { |acc, str, t_beg, t_end| acc << {:letter, str[t_beg...t_end]} },
-    22 => Action.new { |acc, str, t_beg, t_end| acc << {:letter, str[t_beg...t_end]} },
-    23 => Action.new { |acc, str, t_beg, t_end| acc << {:letter, str[t_beg...t_end]} },
-    24 => Action.new { |acc, str, t_beg, t_end| acc << {:letter, str[t_beg...t_end]} },
-    25 => Action.new { |acc, str, t_beg, t_end| acc << {:letter, str[t_beg...t_end]} },
-    26 => Action.new { |acc, str, t_beg, t_end| acc << {:letter, str[t_beg...t_end]} },
-    27 => Action.new { |acc, str, t_beg, t_end| acc << {:number, str[t_beg...t_end]} },
-    28 => Action.new { |acc, str, t_beg, t_end| acc << {:number, str[t_beg...t_end]} },
-    29 => Action.new { |acc, str, t_beg, t_end| acc << {:number, str[t_beg...t_end]} },
-    30 => Action.new { |acc, str, t_beg, t_end| acc << {:number, str[t_beg...t_end]} },
-    31 => Action.new { |acc, str, t_beg, t_end| acc << {:number, str[t_beg...t_end]} },
-    32 => Action.new { |acc, str, t_beg, t_end| acc << {:number, str[t_beg...t_end]} },
-    33 => Action.new { |acc, str, t_beg, t_end| acc << {:number, str[t_beg...t_end]} },
-    34 => Action.new { |acc, str, t_beg, t_end| acc << {:number, str[t_beg...t_end]} },
-    35 => Action.new { |acc, str, t_beg, t_end| acc << {:number, str[t_beg...t_end]} },
-    36 => Action.new { |acc, str, t_beg, t_end| acc << {:number, str[t_beg...t_end]} },
+    1 => Action.new { |acc, str, ts, te| acc << {:letter, str[ts..te]} },
+    2 => Action.new { |acc, str, ts, te| acc << {:letter, str[ts..te]} },
+    3 => Action.new { |acc, str, ts, te| acc << {:letter, str[ts..te]} },
+    4 => Action.new { |acc, str, ts, te| acc << {:letter, str[ts..te]} },
+    5 => Action.new { |acc, str, ts, te| acc << {:letter, str[ts..te]} },
+    6 => Action.new { |acc, str, ts, te| acc << {:letter, str[ts..te]} },
+    7 => Action.new { |acc, str, ts, te| acc << {:letter, str[ts..te]} },
+    8 => Action.new { |acc, str, ts, te| acc << {:letter, str[ts..te]} },
+    9 => Action.new { |acc, str, ts, te| acc << {:letter, str[ts..te]} },
+    10 => Action.new { |acc, str, ts, te| acc << {:letter, str[ts..te]} },
+    11 => Action.new { |acc, str, ts, te| acc << {:letter, str[ts..te]} },
+    12 => Action.new { |acc, str, ts, te| acc << {:letter, str[ts..te]} },
+    13 => Action.new { |acc, str, ts, te| acc << {:letter, str[ts..te]} },
+    14 => Action.new { |acc, str, ts, te| acc << {:letter, str[ts..te]} },
+    15 => Action.new { |acc, str, ts, te| acc << {:letter, str[ts..te]} },
+    16 => Action.new { |acc, str, ts, te| acc << {:letter, str[ts..te]} },
+    17 => Action.new { |acc, str, ts, te| acc << {:letter, str[ts..te]} },
+    18 => Action.new { |acc, str, ts, te| acc << {:letter, str[ts..te]} },
+    19 => Action.new { |acc, str, ts, te| acc << {:letter, str[ts..te]} },
+    20 => Action.new { |acc, str, ts, te| acc << {:letter, str[ts..te]} },
+    21 => Action.new { |acc, str, ts, te| acc << {:letter, str[ts..te]} },
+    22 => Action.new { |acc, str, ts, te| acc << {:letter, str[ts..te]} },
+    23 => Action.new { |acc, str, ts, te| acc << {:letter, str[ts..te]} },
+    24 => Action.new { |acc, str, ts, te| acc << {:letter, str[ts..te]} },
+    25 => Action.new { |acc, str, ts, te| acc << {:letter, str[ts..te]} },
+    26 => Action.new { |acc, str, ts, te| acc << {:letter, str[ts..te]} },
+    27 => Action.new { |acc, str, ts, te| acc << {:number, str[ts..te]} },
+    28 => Action.new { |acc, str, ts, te| acc << {:number, str[ts..te]} },
+    29 => Action.new { |acc, str, ts, te| acc << {:number, str[ts..te]} },
+    30 => Action.new { |acc, str, ts, te| acc << {:number, str[ts..te]} },
+    31 => Action.new { |acc, str, ts, te| acc << {:number, str[ts..te]} },
+    32 => Action.new { |acc, str, ts, te| acc << {:number, str[ts..te]} },
+    33 => Action.new { |acc, str, ts, te| acc << {:number, str[ts..te]} },
+    34 => Action.new { |acc, str, ts, te| acc << {:number, str[ts..te]} },
+    35 => Action.new { |acc, str, ts, te| acc << {:number, str[ts..te]} },
+    36 => Action.new { |acc, str, ts, te| acc << {:number, str[ts..te]} },
   }
 end

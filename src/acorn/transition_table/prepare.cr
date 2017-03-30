@@ -7,7 +7,7 @@ module Acorn
         actions = transition_table.actions
 
         grammar.actions.each do |tok_name, tok_pat, tok_handler|
-          push_token = TransitionTable::Action.new { |tokens, str, ts, te| tokens << {tok_name, str[ts...te]} }
+          push_token = TransitionTable::Action.new { |tokens, str, ts, te| tokens << {tok_name, str[ts..te]} }
           patterns = Acorn::Pattern.parse(tok_pat)
           # 0 is always the start state:
           next_start_states = Set(TransitionTable::State).new([0])
