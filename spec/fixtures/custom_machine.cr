@@ -28,7 +28,7 @@ module CustomMachine
         idx += 1
         char = nil
       else
-        next_state = transitions[nil]
+        next_state = transitions[:epsilon]
         ACTIONS[current_state].call(acc, input, token_begin, idx)
         token_begin = idx
       end
@@ -75,82 +75,82 @@ module CustomMachine
       'z' => 26,
     },
     1 => {
-      nil => 0,
+      :epsilon => 0,
     },
     2 => {
-      nil => 0,
+      :epsilon => 0,
     },
     3 => {
-      nil => 0,
+      :epsilon => 0,
     },
     4 => {
-      nil => 0,
+      :epsilon => 0,
     },
     5 => {
-      nil => 0,
+      :epsilon => 0,
     },
     6 => {
-      nil => 0,
+      :epsilon => 0,
     },
     7 => {
-      nil => 0,
+      :epsilon => 0,
     },
     8 => {
-      nil => 0,
+      :epsilon => 0,
     },
     9 => {
-      nil => 0,
+      :epsilon => 0,
     },
     10 => {
-      nil => 0,
+      :epsilon => 0,
     },
     11 => {
-      nil => 0,
+      :epsilon => 0,
     },
     12 => {
-      nil => 0,
+      :epsilon => 0,
     },
     13 => {
-      nil => 0,
+      :epsilon => 0,
     },
     14 => {
-      nil => 0,
+      :epsilon => 0,
     },
     15 => {
-      nil => 0,
+      :epsilon => 0,
     },
     16 => {
-      nil => 0,
+      :epsilon => 0,
     },
     17 => {
-      nil => 0,
+      :epsilon => 0,
     },
     18 => {
-      nil => 0,
+      :epsilon => 0,
     },
     19 => {
-      nil => 0,
+      :epsilon => 0,
     },
     20 => {
-      nil => 0,
+      :epsilon => 0,
     },
     21 => {
-      nil => 0,
+      :epsilon => 0,
     },
     22 => {
-      nil => 0,
+      :epsilon => 0,
     },
     23 => {
-      nil => 0,
+      :epsilon => 0,
     },
     24 => {
-      nil => 0,
+      :epsilon => 0,
     },
     25 => {
-      nil => 0,
+      :epsilon => 0,
     },
     26 => {
-      nil => 0,
+      :epsilon => 0,
     },
   }
 

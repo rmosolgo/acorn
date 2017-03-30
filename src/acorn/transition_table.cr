@@ -3,8 +3,8 @@ require "./transition_table/*"
 module Acorn
   class TransitionTable
     alias State = Int32
-    # `nil` is used as ε-transition
-    alias Transition = Char | Nil
+    # `:epsilon` is used as ε-transition
+    alias Transition = Char | Symbol
     alias Transitions = Hash(Transition, State)
     alias Table = Hash(State, Transitions)
     alias StateMap = Hash(Symbol, Array(State))

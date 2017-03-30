@@ -16,10 +16,10 @@ describe Acorn::StaticMachine do
     rendered_transitions = normalize_code "
     TABLE = {
       0 => { '0' => 1, '1' => 2, 'a' => 3, 'b' => 4, },
-      1 => { nil => 0, },
-      2 => { nil => 0, },
-      3 => { nil => 0, },
-      4 => { nil => 0, },
+      1 => { :epsilon => 0, },
+      2 => { :epsilon => 0, },
+      3 => { :epsilon => 0, },
+      4 => { :epsilon => 0, },
     }"
     normalized_crystal_code.should contain(rendered_transitions)
 

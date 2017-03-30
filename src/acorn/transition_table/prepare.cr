@@ -18,7 +18,7 @@ module Acorn
           # Add a loopback to the starting state when we finish this token
           # Register the action
           next_start_states.each do |ending_state|
-            table[ending_state][nil] = 0
+            table[ending_state][:epsilon] = 0
             ending_states[tok_name] << ending_state
             actions[ending_state] = push_token
           end

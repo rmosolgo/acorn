@@ -15,7 +15,7 @@ module Acorn
         idx += 1
         char = nil
       else
-        next_state = transitions[nil]
+        next_state = transitions[:epsilon]
         $$actions[current_state].call(acc, input, token_begin, idx)
         token_begin = idx
       end
