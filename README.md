@@ -43,15 +43,39 @@ dependencies:
   MyLexer.scan(input) # => Array(Tuple(Symbol, String))
   ```
 
+### Regular Expressions
+
+Tokens are defined with a small regular expression language:
+
+Feature | Example
+---|---
+Character| `a`, `1`, `❤️`
+Sequence |`ab`, `123`
+Alternation | `a┃b`
+~~Grouping~~ | `(ab)┃c`
+~~Any character~~ | `.`
+~~One of~~ | `[abc]`
+~~Not one of~~ | `[^abc]`
+Escape | `\[`, `\.`
+Unicode character range | `a-z`, `0-9`
+Zero-or-more | `a*`  
+One-or-more | `a+`
+Zero-or-one | `a?`
+Specific number | `a{3}`
+Between numbers | `a{3,4}`
+At least | `a{3,}`
+
 ## Development
 
+- rebuild fixtures with `crystal run spec/prepare.cr`
 - `crystal spec`
-- The fixtures are weird, use `crystal run spec/prepare.cr` if they're stale
 
 ## TODO
 
+- Handle alternation in the transition table
+- Add proper error handling
+- Finish regexp language (`(...)`, `.`, `[...]`, `[^...]`)
 - Better tokens: include line & col out of the box
-- Handle repetition in the transition table
 
 ## Contributing
 
