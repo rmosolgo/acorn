@@ -52,7 +52,25 @@ describe Acorn::TransitionTable do
       tokens.should eq(expected_tokens)
     end
 
-    pending "handes alternation AND repetition" { }
+    it "handes alternation AND repetition" do
+      m = Acorn::RuntimeMachine.new
+      m.token(:sm, "0*0-2")
+      m.token(:md, "3|4")
+      m.token(:lg, "6-7+")
+      m.token(:xl, "[89]*")
+      table = Acorn::TransitionTable.new(m)
+      tokens = table.scan("340026670119988")
+      expected_tokens = [
+        {:md, "3"},
+        {:md, "4"},
+        {:sm, "002"},
+        {:lg, "667"},
+        {:sm, "01"},
+        {:sm, "1"},
+        {:xl, "9988"},
+      ]
+      tokens.should eq(expected_tokens)
+    end
   end
 
   describe "errors" do

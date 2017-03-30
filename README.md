@@ -54,7 +54,7 @@ Sequence |`ab`, `123`
 Alternation | `a┃b`
 ~~Grouping~~ | `(ab)┃c`
 ~~Any character~~ | `.`
-~~One of~~ | `[abc]`
+One of | `[abc]`
 ~~Not one of~~ | `[^abc]`
 Escape | `\[`, `\.`
 Unicode character range | `a-z`, `0-9`
@@ -72,9 +72,8 @@ At least | `a{3,}`
 
 ## TODO
 
-- Handle alternation in the transition table
 - Add proper error handling
-- Finish regexp language (`(...)`, `.`, `[...]`, `[^...]`)
+- Finish regexp language (`(...)`, `.`, `[^...]`)
 - Better tokens: include line & col out of the box
 
 ## Contributing

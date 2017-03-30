@@ -125,6 +125,16 @@ describe Acorn::Pattern do
       pattern = pattern_parse_one("\\-")
       pattern.matches.should eq(['-'])
     end
+
+    it "handles one-of" do
+      pattern = pattern_parse_one_either("[abc]+")
+      pattern.occurrences.should eq(1..Int32::MAX)
+      pattern.left.matches.should eq(['a', 'b'])
+      pattern.left.occurrences.should eq(1..1)
+
+      pattern.right.matches.should eq(['c'])
+      pattern.right.occurrences.should eq(1..1)
+    end
   end
 
   describe "sequence" do

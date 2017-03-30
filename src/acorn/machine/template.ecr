@@ -24,14 +24,11 @@ module <%= @name %>
   end
 
   # A deterministic finite automaton built from the specified patterns
-  alias State = Int32
-  alias Transition = Char | Nil
-  alias TransitionTable = Hash(Transition, State)
   TABLE = {
 <% table.table.each do |start, transitions| %>    <%= start %> => {<% transitions.each do |char, end_state| %>
       <%= char ? char.inspect : "nil" %> => <%= end_state %>,<% end %>
-    } of Transition => State,
-<% end %>  } of State => TransitionTable
+    },
+<% end %>  }
 
   # A map of state => Action pairs to call when machines are finished
   ACTIONS = {
