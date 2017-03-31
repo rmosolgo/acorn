@@ -43,6 +43,10 @@ module Acorn
             scanner.scan(/./)
             push_char(parts, scanner)
             escape = EscapeState::None
+          elsif scanner.scan(/\./)
+            apply_union(parts, union)
+            pattern = Acorn::AnyPattern.new
+            parts.last.push(pattern)
           elsif scanner.scan(/\[/)
             bracket = BracketState::Capture
             parts << [] of Pattern

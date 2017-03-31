@@ -78,6 +78,11 @@ module Acorn
         [next_state]
       end
 
+      def self.add_states(table, st, pattern : Acorn::AnyPattern) : Array(State)
+        next_state = table[st][:any]
+        [next_state]
+      end
+
       def self.add_states(table, st, pattern : Acorn::EitherPattern) : Array(State)
         next_states = Set(State).new
         next_states.concat(build_states(table, pattern.left, [st]))
@@ -91,6 +96,10 @@ module Acorn
 
       def self.add_loop_state(table, st, pattern : Acorn::CharPattern) : Nil
         table[st][pattern.match] = st
+      end
+
+      def self.add_loop_state(table, st, pattern : Acorn::AnyPattern) : Nil
+        table[st][:any] = st
       end
 
       def self.add_loop_state(table, st, pattern : Acorn::EitherPattern) : Nil

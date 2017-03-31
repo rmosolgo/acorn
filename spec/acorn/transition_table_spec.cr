@@ -71,6 +71,27 @@ describe Acorn::TransitionTable do
       ]
       tokens.should eq(expected_tokens)
     end
+
+    it "handes any-char" do
+      m = Acorn::RuntimeMachine.new
+      m.token(:a, "a.")
+      # TODO: this goes infinite:
+      # m.token :a, "a.."
+      m.token(:b, "b.*c")
+      m.token(:c, "c*")
+      m.token(:d, "d.{2}")
+      table = Acorn::TransitionTable.new(m)
+      tokens = table.scan("azccacbzycdccc")
+      expected_tokens = [
+        {:a, "az"},
+        {:c, "cc"},
+        {:a, "ac"},
+        {:b, "bzyc"},
+        {:d, "dcc"},
+        {:c, "c"}
+      ]
+      tokens.should eq(expected_tokens)
+    end
   end
 
   describe "errors" do

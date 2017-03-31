@@ -2,7 +2,7 @@
 
 🚧 Under Construction 👷
 
-A state machine compiler with no runtime dependency.Define a grammar using a subset of regular expression notation, then compile it into a blazing-fast state machine. `Acorn` supports lexers or custom string-based state machines.
+A state machine compiler with no runtime dependency. Define a grammar using a subset of regular expression notation, then compile it into a blazing-fast state machine. `Acorn` supports lexers or custom string-based state machines.
 
 ## Installation
 
@@ -22,7 +22,7 @@ dependencies:
   # ./build/my_lexer.cr
   require "acorn"
 
-  module MyLexer < Acorn::Lexer
+  class MyLexer < Acorn::Lexer
     # optional, rename the generated class:
     # name("Namespace::MyLexer")
     token :letter "a-z"
@@ -74,7 +74,7 @@ For example, if you define a lexer:
 
 ```ruby
 # build/my_lexer.cr
-module MyLexer < Acorn::Lexer
+class MyLexer < Acorn::Lexer
   # ...
   generate("./app/my_lexer.cr")
 end
@@ -98,7 +98,7 @@ The generated code has no dependency on `Acorn`, so you only need this library d
 
 ### Tokens
 
-`Acorn` returns an array tokens. Each token is a tuple with:
+`Acorn` returns an of array tokens. Each token is a tuple with:
 
 - `Symbol`: the name of this token in the lexer definition
 - `String`: the segment of input which matched the pattern
@@ -131,6 +131,7 @@ Line numbers and column numbers are _1-indexed_, so the first character in the i
 
 - Add proper error handling
 - Finish regexp language (`(...)`, `.`, `[^...]`)
+  - A move on `a` is _also_ a move on `:any`, how is that handled?
 - Better tokens: include line & col out of the box
 
 ## License

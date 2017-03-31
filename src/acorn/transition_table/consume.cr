@@ -11,7 +11,7 @@ module Acorn
     while idx <= last_idx
       char ||= input.char_at(idx)
       transitions = $$table[current_state]
-      if (next_state = transitions[char]?)
+      if (next_state = transitions[char]?) || (next_state = transitions[:any]?)
         idx += 1
         char = nil
       else

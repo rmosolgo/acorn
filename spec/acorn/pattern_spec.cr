@@ -8,6 +8,10 @@ def pattern_parse_one_either(string)
   pattern_parse_many(string, 1).first.as(Acorn::EitherPattern)
 end
 
+def pattern_parse_one_any(string)
+  pattern_parse_many(string, 1).first.as(Acorn::AnyPattern)
+end
+
 def pattern_parse_many(string, expected)
   patterns = Acorn::Pattern.parse(string)
   if patterns.size == expected
@@ -134,6 +138,11 @@ describe Acorn::Pattern do
 
       pattern.right.matches.should eq(['c'])
       pattern.right.occurrences.should eq(1..1)
+    end
+
+    it "unpacks anys" do
+      pattern = pattern_parse_one_any(".+")
+      pattern.occurrences.should eq(1..Int32::MAX)
     end
   end
 
