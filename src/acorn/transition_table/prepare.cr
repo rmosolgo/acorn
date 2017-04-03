@@ -4,10 +4,8 @@ module Acorn
       def self.call(transition_table, grammar) : Nil
         table = transition_table.table
         ending_states = transition_table.ending_states
-        actions = transition_table.actions
 
         grammar.actions.each do |tok_name, tok_pat, tok_handler|
-          push_token = TransitionTable::Action.new { |tokens, str, ts, te| tokens << {tok_name, str[ts..te]} }
           patterns = Acorn::Pattern.parse(tok_pat)
           # 0 is always the start state:
           next_start_states = Set(TransitionTable::State).new([0])
@@ -20,9 +18,27 @@ module Acorn
           next_start_states.each do |ending_state|
             table[ending_state][:epsilon] = 0
             ending_states[tok_name] << ending_state
-            actions[ending_state] = push_token
           end
         end
+
+        # Post-process: apply `:any` to character transitions
+        # table.each do |starting_state, transitions|
+        #   any_state = transitions[:any]?
+        #   if any_state
+        #     transitions.each do |move, ending_state|
+        #       if move.is_a?(Char)
+        #         extend_transitions(table, from: any_state, to: ending_state)
+        #       end
+        #     end
+        #   end
+        # end
+      end
+
+      # Add transitions on `from` onto `to`, as if the move that lead
+      # you to `to` was actually a move to `from`
+      # (Eg, the move on `'a'` was actually a move on `:any`)
+      def self.extend_transitions(table, from, to)
+
       end
 
       def self.build_states(table, pattern, start_states)
@@ -73,24 +89,26 @@ module Acorn
         next_pattern_start_states.concat(all_states)
       end
 
-      def self.add_states(table, st, pattern : Acorn::CharPattern) : Array(State)
-        next_state = table[st][pattern.match]
-        [next_state]
+      def self.add_states(table, st, pattern : Acorn::CharPattern) : Set(State)
+        next_states = Set(State).new
+        next_states << table[st][pattern.match]
+        next_states
       end
 
-      def self.add_states(table, st, pattern : Acorn::AnyPattern) : Array(State)
-        next_state = table[st][:any]
-        [next_state]
+      def self.add_states(table, st, pattern : Acorn::AnyPattern) : Set(State)
+        next_states = Set(State).new
+        next_states.add(table[st][:any])
+        next_states
       end
 
-      def self.add_states(table, st, pattern : Acorn::EitherPattern) : Array(State)
+      def self.add_states(table, st, pattern : Acorn::EitherPattern) : Set(State)
         next_states = Set(State).new
         next_states.concat(build_states(table, pattern.left, [st]))
         next_states.concat(build_states(table, pattern.right, [st]))
-        next_states.to_a
+        next_states
       end
 
-      def self.add_states(table, st, pattern : Acorn::Pattern) : Array(State)
+      def self.add_states(table, st, pattern : Acorn::Pattern) : Set(State)
         raise ".add_states Not implemented for #{pattern}"
       end
 

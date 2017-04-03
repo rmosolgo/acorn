@@ -2,11 +2,12 @@ require "../spec_helper"
 
 describe Acorn::RuntimeMachine do
   it "tokenizes strings" do
-    machine = Acorn::RuntimeMachine.new
-    machine.token(:open_paren, "(")
-    machine.token(:close_paren, ")")
-    machine.token(:comma, ",")
-    machine.token(:int, "0-9")
+    machine = Acorn::RuntimeMachine.new do |m|
+      m.token(:open_paren, "(")
+      m.token(:close_paren, ")")
+      m.token(:comma, ",")
+      m.token(:int, "0-9")
+    end
 
     tokens = machine.scan("(1,2)")
     expected_tokens = [

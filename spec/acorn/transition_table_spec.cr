@@ -3,13 +3,13 @@ require "../spec_helper"
 describe Acorn::TransitionTable do
   describe "generating" do
     it "builds and consumes the grammar" do
-      m = Acorn::RuntimeMachine.new
-      m.token(:a, "abc")
-      m.token(:b, "ax")
-      m.token(:c, "a")
+      m = Acorn::RuntimeMachine.new do |rm|
+        rm.token(:a, "abc")
+        rm.token(:b, "ax")
+        rm.token(:c, "a")
+      end
 
-      table = Acorn::TransitionTable.new(m)
-      tokens = table.scan("abcaaaxabc")
+      tokens = m.scan("abcaaaxabc")
       expected_tokens = [
         {:a, "abc"},
         {:c, "a"},
@@ -23,20 +23,21 @@ describe Acorn::TransitionTable do
       # p table.ending_states
       # puts "\n"
 
-      terminals = table.ending_states
+      terminals = m.ending_states
       terminals[:a].should eq([3])
       terminals[:b].should eq([4])
       terminals[:c].should eq([1])
     end
 
     it "handles repetition" do
-      m = Acorn::RuntimeMachine.new
-      m.token(:a, "a?")
-      m.token(:b, "b+")
-      m.token(:c, "c*")
-      m.token(:d, "d{2,4}")
-      table = Acorn::TransitionTable.new(m)
-      tokens = table.scan("aadddccddddddbbabc")
+      m = Acorn::RuntimeMachine.new do |rm|
+        rm.token(:a, "a?")
+        rm.token(:b, "b+")
+        rm.token(:c, "c*")
+        rm.token(:d, "d{2,4}")
+      end
+
+      tokens = m.scan("aadddccddddddbbabc")
       expected_tokens = [
         {:a, "a"},
         {:a, "a"},
@@ -53,13 +54,13 @@ describe Acorn::TransitionTable do
     end
 
     it "handes alternation AND repetition" do
-      m = Acorn::RuntimeMachine.new
-      m.token(:sm, "0*0-2")
-      m.token(:md, "3|4")
-      m.token(:lg, "6-7+")
-      m.token(:xl, "[89]*")
-      table = Acorn::TransitionTable.new(m)
-      tokens = table.scan("340026670119988")
+      m = Acorn::RuntimeMachine.new do |rm|
+        rm.token(:sm, "0*0-2")
+        rm.token(:md, "3|4")
+        rm.token(:lg, "6-7+")
+        rm.token(:xl, "[89]*")
+      end
+      tokens = m.scan("340026670119988")
       expected_tokens = [
         {:md, "3"},
         {:md, "4"},
@@ -73,19 +74,20 @@ describe Acorn::TransitionTable do
     end
 
     it "handes any-char" do
-      m = Acorn::RuntimeMachine.new
-      m.token(:a, "a.")
-      # TODO: this goes infinite:
-      # m.token :a, "a.."
-      m.token(:b, "b.*c")
-      m.token(:c, "c*")
-      m.token(:d, "d.{2}")
-      table = Acorn::TransitionTable.new(m)
-      tokens = table.scan("azccacbzycdccc")
+      m = Acorn::RuntimeMachine.new do |rm|
+        rm.token(:a, ".a")
+        # TODO: this goes infinite
+        # rm.token :a, "a.."
+        rm.token(:b, "b.*c")
+        rm.token(:c, "c*")
+        rm.token(:d, "d.{2}")
+      end
+
+      tokens = m.scan("zaccdabzycdccc")
       expected_tokens = [
-        {:a, "az"},
+        {:a, "za"},
         {:c, "cc"},
-        {:a, "ac"},
+        {:a, "da"},
         {:b, "bzyc"},
         {:d, "dcc"},
         {:c, "c"}

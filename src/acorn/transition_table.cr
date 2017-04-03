@@ -4,6 +4,7 @@ module Acorn
   class TransitionTable
     alias State = Int32
     # `:epsilon` is used as ε-transition
+    # `:any` is used as `.`
     alias Transition = Char | Symbol
     alias Transitions = Hash(Transition, State)
     alias Table = Hash(State, Transitions)
@@ -11,14 +12,7 @@ module Acorn
     # TODO: is this actually worth it?
     # alias IndexedTable = Array(Transitions)
 
-    alias Token = Tuple(Symbol, String)
-    alias Tokens = Array(Token)
-    alias Accumulator = Tokens
-    alias Action = Proc(Tokens, String, Int32, Int32, Nil)
-    alias Actions = Hash(State, Action)
-
     getter table
-    getter actions
     getter ending_states
 
     def initialize(grammar)
@@ -32,15 +26,8 @@ module Acorn
       end
 
       @ending_states = StateMap.new { |h, k| h[k] = Array(TransitionTable::State).new }
-      @actions = Actions.new
 
       Prepare.call(self, grammar)
-    end
-
-    def scan(string : String)
-      tokens = Tokens.new
-      consume(string, tokens)
-      tokens
     end
 
     def to_debug
@@ -51,7 +38,5 @@ module Acorn
       io << @ending_states.to_s
       io.to_s
     end
-
-    Acorn::TransitionTable::Consume.define_consume_method("@table", "@actions")
   end
 end
