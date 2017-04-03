@@ -83,6 +83,8 @@ describe Acorn::TransitionTable do
         # rm.token(:a, ".a")
         # TODO: this goes infinite
         # rm.token :a, "a.."
+        # WHAT TO DO HERE?
+        # It thinks `c` is another pattern but it's not.
         rm.token(:b, "b.*c")
         # rm.token(:c, "c*")
         # rm.token(:d, "d.{2}")
