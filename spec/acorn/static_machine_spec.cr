@@ -33,4 +33,10 @@ describe Acorn::StaticMachine do
     "
     normalized_crystal_code.should contain(rendered_actions)
   end
+
+  describe "error handling" do
+    # TODO: Acorn isn't available here
+    pending "handles unexpected inputs" { }
+    pending "handles unexpected end" { }
+  end
 end

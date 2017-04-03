@@ -1,5 +1,10 @@
 require "../spec_helper"
 
+def expect_tokens(machine, str, exp_tokens)
+  tokens = machine.scan(str)
+  tokens.should eq(exp_tokens)
+end
+
 describe Acorn::TransitionTable do
   describe "generating" do
     it "builds and consumes the grammar" do
@@ -83,21 +88,40 @@ describe Acorn::TransitionTable do
         rm.token(:d, "d.{2}")
       end
 
-      tokens = m.scan("zaccdabzycdccc")
-      expected_tokens = [
+      expect_tokens(m, "zaccdacbzycdccc", [
         {:a, "za"},
         {:c, "cc"},
-        {:a, "da"},
+        {:d, "dac"},
         {:b, "bzyc"},
         {:d, "dcc"},
         {:c, "c"}
-      ]
-      tokens.should eq(expected_tokens)
+      ])
+    end
+
+    it "handles ambiguous any-char" do
+      m = Acorn::RuntimeMachine.new do |r|
+        r.token(:a, "aa")
+        r.token(:b, "a.a")
+      end
+
+      expect_tokens(m, "aaa", [{:b, "aaa"}])
     end
   end
 
   describe "errors" do
-    pending "handles unexpected characters" { }
+    it "handles unexpected characters" do
+      m = Acorn::RuntimeMachine.new do |r|
+        r.token(:a, "a")
+        r.token(:b, "b")
+      end
+
+      err = expect_raises(Acorn::UnexpectedInputError) do
+        m.scan("abc")
+      end
+
+      err.message.should eq("Unexpected input: 'c'")
+      err.position.should eq(2)
+    end
     pending "handles unexpected end" { }
   end
 end

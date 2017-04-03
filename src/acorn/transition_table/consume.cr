@@ -14,10 +14,11 @@ module Acorn
       if (next_state = transitions[char]?) || (next_state = transitions[:any]?)
         idx += 1
         char = nil
-      else
-        next_state = transitions[:epsilon]
+      elsif next_state = transitions[:epsilon]?
         $$actions[current_state].call(acc, input, token_begin, idx - 1)
         token_begin = idx
+      else
+        raise Acorn::UnexpectedInputError.new(char, idx)
       end
       current_state = next_state
     end
