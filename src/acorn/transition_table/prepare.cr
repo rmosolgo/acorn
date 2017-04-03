@@ -22,23 +22,63 @@ module Acorn
         end
 
         # Post-process: apply `:any` to character transitions
-        # table.each do |starting_state, transitions|
-        #   any_state = transitions[:any]?
-        #   if any_state
-        #     transitions.each do |move, ending_state|
-        #       if move.is_a?(Char)
-        #         extend_transitions(table, from: any_state, to: ending_state)
-        #       end
-        #     end
-        #   end
-        # end
+        any_transitions = [] of {State, State}
+        table.each do |starting_state, transitions|
+          if any_state = transitions[:any]?
+            transitions.each do |move, ending_state|
+              if move.is_a?(Char)
+                any_transitions << {any_state, ending_state}
+              end
+            end
+          end
+        end
+
+        puts transition_table.to_debug
+        raise "boom"
+        any_transitions.each do |from_st, to_st|
+          extend_transitions(table, ending_states, from_st, to_st)
+        end
       end
 
       # Add transitions on `from` onto `to`, as if the move that lead
       # you to `to` was actually a move to `from`
       # (Eg, the move on `'a'` was actually a move on `:any`)
-      def self.extend_transitions(table, from, to)
+      def self.extend_transitions(table, ending_states, from, to)
+        p "#{from} -> #{to}"
+        if table[to].key?(:any) && table[to][:any] == to
+          return
+        end
+        next_moves = table[from]
+        copies = [] of {Char | Symbol, State}
 
+        next_moves.each do |move, st|
+          if move.is_a?(Char) || move == :epsilon
+            copies << {move, st}
+          end
+        end
+
+        copies.each do |move, st|
+          case move
+          when :epsilon
+            table[to][move] = 0
+            found_ending = false
+            ending_states.each do |tok_name, sts|
+              if sts.includes?(from)
+                found_ending = true
+                sts << to
+                break
+              end
+            end
+            if !found_ending
+              raise "Invariant: Failed to find a new ending state for #{st} in #{ending_states}"
+            end
+          when Char
+            new_st = table[to][move]
+            extend_transitions(table, ending_states, st, new_st)
+          else
+            raise "Unsupported copy: #{move}, #{st}"
+          end
+        end
       end
 
       def self.build_states(table, pattern, start_states)

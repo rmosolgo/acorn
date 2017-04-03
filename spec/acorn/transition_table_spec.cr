@@ -80,12 +80,12 @@ describe Acorn::TransitionTable do
 
     it "handes any-char" do
       m = Acorn::RuntimeMachine.new do |rm|
-        rm.token(:a, ".a")
+        # rm.token(:a, ".a")
         # TODO: this goes infinite
         # rm.token :a, "a.."
         rm.token(:b, "b.*c")
-        rm.token(:c, "c*")
-        rm.token(:d, "d.{2}")
+        # rm.token(:c, "c*")
+        # rm.token(:d, "d.{2}")
       end
 
       expect_tokens(m, "zaccdacbzycdccc", [
