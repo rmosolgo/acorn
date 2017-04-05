@@ -52,8 +52,8 @@ Feature | Example
 ---|---
 Character| `a`, `1`, `❤️`
 Sequence |`ab`, `123`
-Alternation | `a|b`
-~~Grouping~~ | `(ab)|c`
+Alternation | <code>a&#124;b</code>
+~~Grouping~~ | <code>(ab)&#124;c</code>
 ~~Any character~~ | `.`
 One of | `[abc]`
 ~~Not one of~~ | `[^abc]`
