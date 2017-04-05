@@ -127,6 +127,23 @@ Line numbers and column numbers are _1-indexed_, so the first character in the i
 - rebuild fixtures with `crystal run spec/prepare.cr`
 - `crystal spec`
 
+## Goals & Non-Goals
+
+__Goals:__
+
+- Great runtime performance
+- Linear time complexity
+- Reasonable code size (`.cr` file and memory usage)
+- No runtime dependency
+- Plain-Crystal API (source files are `.cr`, not a special format)
+- Easy to write a lexer, possible to write something else
+
+__Non-goals:__
+
+- Great compile-time performance (choose simplicity over performance)
+- Fancy regexp features
+
+
 ## TODO
 
 - Add proper error handling
