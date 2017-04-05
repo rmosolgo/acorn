@@ -36,7 +36,20 @@ describe Acorn::StaticMachine do
 
   describe "error handling" do
     # TODO: Acorn isn't available here
-    pending "handles unexpected inputs" { }
-    pending "handles unexpected end" { }
+    it "handles unexpected inputs" do
+      err = expect_raises(NumbersAndLetters::UnexpectedInputError) {
+        NumbersAndLetters.scan("ab&123")
+      }
+      err.message.should eq("Unexpected input: '&'")
+      err.position.should eq(2)
+    end
+
+    it "handles unexpected end" do
+      err = expect_raises(NumbersAndLetters::UnexpectedEndError) {
+        NumbersAndLetters.scan("aaa1")
+      }
+      err.message.should eq("Unexpected EOS")
+      err.position.should eq(4)
+    end
   end
 end

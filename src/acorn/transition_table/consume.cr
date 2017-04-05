@@ -18,12 +18,17 @@ module Acorn
         $$actions[current_state].call(acc, input, token_begin, idx - 1)
         token_begin = idx
       else
-        raise Acorn::UnexpectedInputError.new(char, idx)
+        raise UnexpectedInputError.new(char, idx)
       end
       current_state = next_state
     end
     # last token:
-    $$actions[current_state].call(acc, input, token_begin, idx - 1)
+    action = $$actions[current_state]?
+    if action
+      action.call(acc, input, token_begin, idx - 1)
+    else
+      raise UnexpectedEndError.new(idx)
+    end
   end"
 
       macro define_consume_method(table_id, actions_id)

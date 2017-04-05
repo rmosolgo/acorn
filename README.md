@@ -146,10 +146,11 @@ __Non-goals:__
 
 ## TODO
 
-- Add proper error handling
 - Finish regexp language (`(...)`, `.`, `[^...]`)
   - A move on `a` is _also_ a move on `:any`, how is that handled?
-- Better tokens: include line & col out of the box
+- Better line/col awareness:
+  - Add line/col to tokens
+  - Add line/col to errors
 
 ## License
 

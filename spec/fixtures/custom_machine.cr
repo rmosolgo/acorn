@@ -24,18 +24,24 @@ module CustomMachine
     while idx <= last_idx
       char ||= input.char_at(idx)
       transitions = TABLE[current_state]
-      if (next_state = transitions[char]?)
+      if (next_state = transitions[char]?) || (next_state = transitions[:any]?)
         idx += 1
         char = nil
-      else
-        next_state = transitions[:epsilon]
+      elsif next_state = transitions[:epsilon]?
         ACTIONS[current_state].call(acc, input, token_begin, idx - 1)
         token_begin = idx
+      else
+        raise UnexpectedInputError.new(char, idx)
       end
       current_state = next_state
     end
     # last token:
-    ACTIONS[current_state].call(acc, input, token_begin, idx - 1)
+    action = ACTIONS[current_state]?
+    if action
+      action.call(acc, input, token_begin, idx - 1)
+    else
+      raise UnexpectedEndError.new(idx)
+    end
   end
 
   def scan(input : String) : Accumulator
@@ -183,4 +189,24 @@ module CustomMachine
     25 => Action.new { |acc,str,ts,te| acc << ({ts, te}) },
     26 => Action.new { |acc,str,ts,te| acc << ({ts, te}) },
   }
+
+
+  class Error < Exception
+  end
+  class UnexpectedEndError < Error
+    getter position
+    def initialize(position : Int32)
+      @position = position
+      super("Unexpected EOS")
+    end
+  end
+  class UnexpectedInputError < Error
+    getter char
+    getter position
+    def initialize(char : Char, position : Int32)
+      @char = char
+      @position = position
+      super("Unexpected input: '#{char}'")
+    end
+  end
 end

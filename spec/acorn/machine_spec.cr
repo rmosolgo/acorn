@@ -3,12 +3,12 @@ require "../spec_helper"
 
 describe Acorn::Machine do
   it "makes a lexer" do
-    tokens = NumbersAndLetters.scan("a1b2")
+    tokens = NumbersAndLetters.scan("a11b22")
     expected_tokens = [
       {:letter, "a"},
-      {:number, "1"},
+      {:number, "11"},
       {:letter, "b"},
-      {:number, "2"},
+      {:number, "22"},
     ]
     tokens.should eq(expected_tokens)
   end

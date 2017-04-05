@@ -34,4 +34,24 @@ module <%= @name %>
   ACTIONS = {
 <% @actions.each do |name, pattern, body| terminals = table.ending_states[name]; terminals.each do |terminal_state| %>    <%= terminal_state %> => Action.new <%= body %>,
 <% end %><% end %>  }
+
+
+  class Error < Exception
+  end
+  class UnexpectedEndError < Error
+    getter position
+    def initialize(position : Int32)
+      @position = position
+      super("Unexpected EOS")
+    end
+  end
+  class UnexpectedInputError < Error
+    getter char
+    getter position
+    def initialize(char : Char, position : Int32)
+      @char = char
+      @position = position
+      super("Unexpected input: '#{char}'")
+    end
+  end
 end

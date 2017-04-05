@@ -122,6 +122,21 @@ describe Acorn::TransitionTable do
       err.message.should eq("Unexpected input: 'c'")
       err.position.should eq(2)
     end
-    pending "handles unexpected end" { }
+
+    pending "includes line & col" {}
+
+    it "handles unexpected end" do
+      m = Acorn::RuntimeMachine.new do |r|
+        r.token(:a, "aaa")
+        r.token(:b, "bbb")
+      end
+
+      err = expect_raises(Acorn::UnexpectedEndError) do
+        m.scan("aaab")
+      end
+
+      err.message.should eq("Unexpected EOS")
+      err.position.should eq(4)
+    end
   end
 end

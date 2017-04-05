@@ -1,6 +1,9 @@
 require "./error"
 
 module Acorn
+  # Raised when the next character doesn't have a valid transition.
+  #
+  # Duplicated in static_machine/template.ecr
   class UnexpectedInputError < Acorn::Error
     getter char
     getter position
