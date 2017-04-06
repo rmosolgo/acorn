@@ -70,30 +70,16 @@ module Acorn
             apply_number(parts, 0..Pattern::ANY_NUMBER)
           elsif scanner.scan(/\+/)
             apply_number(parts, 1..Pattern::ANY_NUMBER)
-          elsif scanner.scan(/\{(\d+)(,)?(\d+)?\}/)
-            min = scanner[1].to_i
-            max = if scanner[2]?
-              # A comma is present
-              if scanner[3]?
-                scanner[3].to_i
-              else
-                ANY_NUMBER
-              end
-            else
-              # No comma, it's an exact requirement
-              min
-            end
+          elsif scanner.scan(/\{(?<min>\d+)?(?<upto>,)?(?<max>\d+)?\}/)
+            min = (scanner["min"]? || 0).to_i
+            max = (scanner["max"]? || (scanner["upto"]? ? ANY_NUMBER : min)).to_i
             apply_number(parts, min..max)
           elsif scanner.scan(/(?<range_begin>[^\-])-(?<range_end>[^\-])/)
             union = apply_union(parts, union)
             # Range expression
             range_begin = scanner[1].char_at(0)
             range_end = scanner[2].char_at(0)
-            chars = (range_begin..range_end).to_a
-            char_pattern = CharPattern.new(match: chars.shift)
-            pattern = chars.reduce(char_pattern) do |pat, char|
-              pat.union(CharPattern.new(match: char))
-            end
+            pattern = Acorn::RangePattern.new(range_begin..range_end)
             parts.last.push(pattern)
           elsif scanner.scan(/./)
             union = apply_union(parts, union)

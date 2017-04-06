@@ -8,6 +8,10 @@ def pattern_parse_one_either(string)
   pattern_parse_many(string, 1).first.as(Acorn::EitherPattern)
 end
 
+def pattern_parse_one_range(string)
+  pattern_parse_many(string, 1).first.as(Acorn::RangePattern)
+end
+
 def pattern_parse_one_any(string)
   pattern_parse_many(string, 1).first.as(Acorn::AnyPattern)
 end
@@ -36,16 +40,11 @@ describe Acorn::Pattern do
     end
 
     it "unpacks sequences" do
-      pattern = pattern_parse_one_either("A-Z")
-      sequence = pattern.matches
-      sequence.should eq([
-        'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
-        'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
-        'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
-      ])
+      pattern = pattern_parse_one_range("A-Z")
+      pattern.range.should eq('A'..'Z')
 
-      pattern = pattern_parse_one_either("乮-乲")
-      pattern.matches.should eq(['乮', '乯', '买', '乱', '乲'])
+      pattern = pattern_parse_one_range("乮-乲")
+      pattern.range.should eq('乮'..'乲')
     end
 
     it "unpacks literal numbers" do
@@ -56,6 +55,9 @@ describe Acorn::Pattern do
       pattern = pattern_parse_one("a{2,}")
       pattern.occurrences.should eq(2..Int32::MAX)
 
+      pattern = pattern_parse_one("a{,2}")
+      pattern.occurrences.should eq(0..2)
+
       pattern = pattern_parse_one("a{10}")
       pattern.occurrences.should eq(10..10)
     end
@@ -65,8 +67,8 @@ describe Acorn::Pattern do
       pattern.matches.should eq(['Ꚋ'])
       pattern.occurrences.should eq(0..1)
 
-      pattern = pattern_parse_one_either("0-3?")
-      pattern.matches.should eq(['0', '1', '2', '3'])
+      pattern = pattern_parse_one_range("0-3?")
+      pattern.range.should eq('0'..'3')
       pattern.occurrences.should eq(0..1)
     end
 
@@ -75,14 +77,14 @@ describe Acorn::Pattern do
       pattern.matches.should eq(['$'])
       pattern.occurrences.should eq(1..Int32::MAX)
 
-      pattern = pattern_parse_one_either("c-f+")
-      pattern.matches.should eq(['c', 'd', 'e', 'f'])
+      pattern = pattern_parse_one_range("c-f+")
+      pattern.range.should eq('c'..'f')
       pattern.occurrences.should eq(1..Int32::MAX)
     end
 
     it "unpacks zero-or-mores" do
-      pattern = pattern_parse_one_either("6-8*")
-      pattern.matches.should eq(['6', '7', '8'])
+      pattern = pattern_parse_one_range("6-8*")
+      pattern.range.should eq('6'..'8')
       pattern.occurrences.should eq(0..Int32::MAX)
     end
 
@@ -102,7 +104,7 @@ describe Acorn::Pattern do
       pattern.left.matches.should eq(['a'])
       pattern.left.occurrences.should eq(0..1)
 
-      pattern.right.matches.should eq(['0', '1', '2'])
+      pattern.right.as(Acorn::RangePattern).range.should eq('0'..'2')
       pattern.right.occurrences.should eq(2..Int32::MAX)
 
       pattern.occurrences.should eq(1..1)

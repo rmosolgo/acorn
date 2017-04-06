@@ -54,6 +54,10 @@ module Acorn
       @transition_table.table
     end
 
+    def to_debug
+      @transition_table.to_debug
+    end
+
     private def build_token_actions(ending_states, actions)
       token_actions = {} of Int32 => Action
       ending_states.each do |tok_name, states|

@@ -20,25 +20,6 @@ module Acorn
             ending_states[tok_name] << ending_state
           end
         end
-
-        # Post-process: apply `:any` to character transitions
-        # table.each do |starting_state, transitions|
-        #   any_state = transitions[:any]?
-        #   if any_state
-        #     transitions.each do |move, ending_state|
-        #       if move.is_a?(Char)
-        #         extend_transitions(table, from: any_state, to: ending_state)
-        #       end
-        #     end
-        #   end
-        # end
-      end
-
-      # Add transitions on `from` onto `to`, as if the move that lead
-      # you to `to` was actually a move to `from`
-      # (Eg, the move on `'a'` was actually a move on `:any`)
-      def self.extend_transitions(table, from, to)
-
       end
 
       def self.build_states(table, pattern, start_states)
@@ -108,6 +89,12 @@ module Acorn
         next_states
       end
 
+      def self.add_states(table, st, pattern : Acorn::RangePattern) : Set(State)
+        next_states = Set(State).new
+        next_states.add(table[st][pattern.range])
+        next_states
+      end
+
       def self.add_states(table, st, pattern : Acorn::Pattern) : Set(State)
         raise ".add_states Not implemented for #{pattern}"
       end
@@ -118,6 +105,10 @@ module Acorn
 
       def self.add_loop_state(table, st, pattern : Acorn::AnyPattern) : Nil
         table[st][:any] = st
+      end
+
+      def self.add_loop_state(table, st, pattern : Acorn::RangePattern) : Nil
+        table[st][pattern.range] = st
       end
 
       def self.add_loop_state(table, st, pattern : Acorn::EitherPattern) : Nil

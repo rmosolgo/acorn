@@ -88,13 +88,12 @@ describe Acorn::TransitionTable do
         rm.token(:d, "d.{2}")
       end
 
-      expect_tokens(m, "zaccdacbzycdccc", [
+      expect_tokens(m, "zaccdacbzycdccdaa", [
         {:a, "za"},
         {:c, "cc"},
         {:d, "dac"},
-        {:b, "bzyc"},
-        {:d, "dcc"},
-        {:c, "c"}
+        {:b, "bzycdccc"},
+        {:d, "daa"},
       ])
     end
 

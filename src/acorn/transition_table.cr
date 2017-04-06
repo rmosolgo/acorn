@@ -5,7 +5,7 @@ module Acorn
     alias State = Int32
     # `:epsilon` is used as ε-transition
     # `:any` is used as `.`
-    alias Transition = Char | Symbol
+    alias Transition = Char | Symbol | Range(Char, Char)
     alias Transitions = Hash(Transition, State)
     alias Table = Hash(State, Transitions)
     alias StateMap = Hash(Symbol, Array(State))

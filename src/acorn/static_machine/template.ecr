@@ -23,7 +23,7 @@ module <%= @name %>
     acc
   end
 
-  # A deterministic finite automaton built from the specified patterns
+  # An automaton built from the specified patterns
   TABLE = {
 <% table.table.each do |start, transitions| %>    <%= start %> => {<% transitions.each do |char, end_state| %>
       <%= char ? char.inspect : "nil" %> => <%= end_state %>,<% end %>
