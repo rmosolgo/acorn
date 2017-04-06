@@ -8,7 +8,7 @@ A state machine compiler with no runtime dependency. Define a grammar using a su
 
 Add this to your application's `shard.yml`:
 
-```
+```yaml
 dependencies:
   acorn:
     github: "rmosolgo/acorn"
@@ -37,7 +37,7 @@ dependencies:
   crystal run ./build/my_lexer.cr
   ```
 
-- Use the compiled lexer:   
+- Use the compiled lexer:
 
   ```ruby
   require "./src/my_lexer.cr"
@@ -59,7 +59,7 @@ One of | `[abc]`
 ~~Not one of~~ | `[^abc]`
 Escape | `\[`, `\.`
 Unicode character range | `a-z`, `0-9`
-Zero-or-more | `a*`  
+Zero-or-more | `a*`
 One-or-more | `a+`
 Zero-or-one | `a?`
 Specific number | `a{3}`
